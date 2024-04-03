@@ -7,6 +7,11 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 app.use(express.static('dist'))
+app.use((req, res, next) => {
+  res.setHeader('Content-Security-Policy', "default-src 'self' https:; font-src 'self' https://university-of-helsinki-fullstack-node-y.onrender.com/");
+  next();
+});
+
 
   //Settings
   const PORT = process.env.PORT || 3001
