@@ -1,8 +1,17 @@
 const express = require('express')
 const app = express()
+const morgan = require('morgan')
 
+//Initializations
 app.use(express.json())
 
+  //Settings
+  const PORT = 3001
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
+  })
+
+  //Data
 let persons = [
   { 
       "id": 1,
@@ -26,6 +35,12 @@ let persons = [
   }
 ]
 
+//Middlewares
+morgan.token('body', (req, res) => JSON.stringify(req.body));
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
+app.use(morgan('tiny'))
+
+//Start the server
   app.get('/info', (request, response) => {
     const date = new Date()
     const numberOfEntries = persons.length
@@ -37,11 +52,6 @@ let persons = [
   
   app.get('/api/persons', (request, response) => {
     response.json(persons)
-  })
-  
-  const PORT = 3001
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
   })
 
   app.get('/api/persons/:id',(req, res)=>{
