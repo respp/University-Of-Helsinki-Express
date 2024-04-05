@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 
+//Verificaciones
 if (process.argv.length<3) {
   console.log('give password as argument')
   process.exit(1)
@@ -15,29 +16,40 @@ mongoose.connect(url)
 
 // Schema
 const personSchema = new mongoose.Schema({
-  id: Number,
   name: String,
   number: Number,
 })
 
 const Person = mongoose.model('Person', personSchema)
 
-// Crear y guardar objetos:Son funciones constructoras que crean nuevos objetos JavaScript
-// const person = new Person({
-// //   id: 122312312321,  
-//   name: 'Renzo',
-//   number: '1234'
-// })
-
-// //salvando objeto con el metodo save()
-// person.save().then(result => {
-//   console.log('person saved!')
-//   mongoose.connection.close() 
-// })
-
-Person.find({number:1234}).then(result => {
+if (process.argv.length<4) {
+    console.log('phonebook:')
+    Person.find({}).then(result => {
     result.forEach(person => {
-      console.log(person)
+      console.log(person.name, person.number)
     })
     mongoose.connection.close()
   })
+  } else if (process.argv.length == 5){
+    // Creando ojeto
+    const person = new Person({
+        name: process.argv[3],
+        number: process.argv[4]
+    })
+
+//salvando objeto con el metodo save()
+    person.save().then(result => {
+        console.log(`added ${process.argv[3]} number ${process.argv[4]} to phonebook `)
+        mongoose.connection.close() 
+    })
+  } else if (process.argv.length == 4){
+    console.log('give number as argument')
+    process.exit(1)
+  }
+
+
+
+
+
+
+
