@@ -40,7 +40,7 @@ app.use(morgan('tiny'))
       if (person){
         res.json(person)
       } else {
-        response.status(404).end()
+        res.status(404).end()
       }
     })
     .catch(err => next(err))
@@ -76,7 +76,7 @@ app.use(morgan('tiny'))
     }
 
     const person = new Person({
-        id: generateId(),
+        // id: generateId(),
         name: body.name,
         number: body.number,
     })
@@ -85,6 +85,23 @@ app.use(morgan('tiny'))
       console.log(person)
       res.json(savedPerson)
     })
+})
+
+app.put('/api/persons/:id', (req, res) =>{
+  const body = req.body
+
+  const person = {
+    // id: generateId(),
+    name: body.name,
+    number: body.number,
+  }
+
+  Person.findByIdAndUpdate(req.params.id, person, { new:true})
+  .then(savedPerson =>{
+    res.json(savedPerson)
+  })
+  .catch(err => next(err))
+
 })
 
 const errorHandler = (err, req, res, next) => {
