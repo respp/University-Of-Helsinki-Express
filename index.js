@@ -61,7 +61,7 @@ app.use(morgan('tiny'))
     return Math.floor(maxId)
   }
 
-  app.post('/api/persons', (req, res) => {
+  app.post('/api/persons', (req, res, next) => {
     const body = req.body
 
     if(!body.name){
@@ -85,9 +85,10 @@ app.use(morgan('tiny'))
       console.log(person)
       res.json(savedPerson)
     })
+    .catch(err=>next(err))
 })
 
-app.put('/api/persons/:id', (req, res) =>{
+app.put('/api/persons/:id', (req, res, next) =>{
   const body = req.body
 
   const person = {
@@ -96,7 +97,10 @@ app.put('/api/persons/:id', (req, res) =>{
     number: body.number,
   }
 
-  Person.findByIdAndUpdate(req.params.id, person, { new:true})
+  Person.findByIdAndUpdate(req.params.id, person, { 
+    new:true,
+    runValidators: true
+  })
   .then(savedPerson =>{
     res.json(savedPerson)
   })
@@ -109,7 +113,9 @@ const errorHandler = (err, req, res, next) => {
 
   if (err.name === 'CastError') {
     return res.status(400).send({ err: 'malformatted id' })
-  } 
+  } else if (err.name === 'ValidationError') {
+    return res.status(400).json({ err: err.message })
+  }
 
   next(err)
 }
