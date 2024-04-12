@@ -119,6 +119,5 @@ const errorHandler = (err, req, res, next) => {
 
   next(err)
 }
-
 // este debe ser el último middleware cargado
 app.use(errorHandler)
