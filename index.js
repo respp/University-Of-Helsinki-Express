@@ -1,11 +1,17 @@
+require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
-require('dotenv').config()
 const mongoose = require('mongoose')
 mongoose.set('strictQuery',false)
 
-const mongoUrl = process.env.MONGODB_URI || 'mongodb://localhost/bloglist'
+const mongoUrl = process.env.MONGODB_URI
 mongoose.connect(mongoUrl)
+.then(res=>{
+  console.log('conected to mongo')
+})
+.catch(err=>{
+  console.log(err)
+})
 
 const blogSchema = new mongoose.Schema({
   title: String,
@@ -15,6 +21,7 @@ const blogSchema = new mongoose.Schema({
 })
 
 const Blog = mongoose.model('Blog', blogSchema)
+console.log(Blog)
 
 //Initializations
 const app = express()
@@ -32,6 +39,7 @@ app.get('/api/blogs', (req, res) => {
     Blog.find({})
     .then(blogs => {
       res.json(blogs)
+      console.log('se pudo', blogs)
     })
     .catch(err=>{
       console.log('Error 404 papa', err)
