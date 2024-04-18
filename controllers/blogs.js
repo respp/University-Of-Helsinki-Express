@@ -8,9 +8,7 @@ blogsRouter.get('/', (req, res) => {
       res.json(blogs)
       console.log('Get', blogs)
     })
-    .catch(err=>{
-      console.error('Error 404 papa', err)
-    })
+    .catch(err=>next(err))
 })
 
 //Post
