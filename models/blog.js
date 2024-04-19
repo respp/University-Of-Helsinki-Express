@@ -7,6 +7,7 @@ const blogSchema = new mongoose.Schema({
   likes: Number
 })
 
+//Cuando sea pasado a json pasará de ser _id a id y se eliminara __v
 blogSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()

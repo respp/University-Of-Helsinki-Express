@@ -4,7 +4,7 @@ const Blog = require('../models/blog')
 //Start the server
 blogsRouter.get('/', async (req, res) => {
   const blogs = await Blog.find({})
-  res.json(blogs)  
+  res.json(blogs)  //transformando a json
 })
 
 //Post
