@@ -6,20 +6,8 @@ const app = require('../app')
 const Blog = require('../models/blog')
 
 const api = supertest(app)
-const initialBlogs = [
-  {
-    title: "React patterns",
-    author: "Michael Chan",
-    url: "https://reactpatterns.com/",
-    likes: 7,
-  },
-  {
-    title: "Go To Statement Considered Harmful",
-    author: "Edsger W. Dijkstra",
-    url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-    likes: 5,
-  }
-]
+const initialBlogs = require('./test_helper').initialBlogs
+const blogsInDb = require('./test_helper').blogsInDb
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -49,7 +37,7 @@ beforeEach(async () => {
       });
     })  
   
-    test.only('a valid blog can be added', async()=>{
+    test('a valid blog can be added', async()=>{
       const newBlog = {
         title: "async/await simplifies making async calls",
         author: "autor asincrono",
@@ -69,6 +57,23 @@ beforeEach(async () => {
       // console.log('TITLE ',titles)    
       assert(res.body.length, initialBlogs.length + 1)
       assert(titles.includes('async/await simplifies making async calls'))
+    })
+
+    test.only('succeeds with status code 204 if id is valid', async () => {
+      const blogsAtStart = await blogsInDb()
+      const blogToDelete = blogsAtStart[0]
+      console.log('BLOGSTODELETE ',blogToDelete.id)
+
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .expect(204)
+
+      const blogsAtEnd = await blogsInDb()
+
+      assert(blogsAtEnd.length, initialBlogs.length - 1)
+
+      const titles = blogsAtEnd.map(r => r.title)
+      assert(!titles.includes(blogToDelete.title))
     })
 
 after(async () => {
