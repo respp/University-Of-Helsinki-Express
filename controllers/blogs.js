@@ -24,8 +24,18 @@ blogsRouter.put('/:id', async (req, res) => {
     likes: body.likes,
   }
 
-  const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, blog, { new: true })
-  res.json(updatedBlog)
+  try {
+    const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, blog, { new: true });
+    if (!updatedBlog) {
+      return res.status(404).json({ error: 'Blog not found' });
+    }
+    // console.log('UPDATEDBLOG', updatedBlog);
+    res.json(updatedBlog);
+  } catch (error) {
+    console.error('Error updating blog:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+  
 })
 
 //Post

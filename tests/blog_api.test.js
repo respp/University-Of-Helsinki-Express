@@ -7,7 +7,7 @@ const Blog = require('../models/blog')
 
 const api = supertest(app)
 const initialBlogs = require('./test_helper').initialBlogs
-const blogsInDb = require('./test_helper').blogsInDb
+const helper = require('./test_helper')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -59,22 +59,56 @@ beforeEach(async () => {
       assert(titles.includes('async/await simplifies making async calls'))
     })
 
-    test.only('succeeds with status code 204 if id is valid', async () => {
-      const blogsAtStart = await blogsInDb()
+    test('succeeds with status code 204 if id is valid', async () => {
+      const blogsAtStart = await helper.blogsInDb()
       const blogToDelete = blogsAtStart[0]
-      console.log('BLOGSTODELETE ',blogToDelete.id)
+      // console.log('BLOGSTODELETE ',blogToDelete.id)
 
       await api
         .delete(`/api/blogs/${blogToDelete.id}`)
         .expect(204)
 
-      const blogsAtEnd = await blogsInDb()
+      const blogsAtEnd = await helper.blogsInDb()
 
       assert(blogsAtEnd.length, initialBlogs.length - 1)
 
       const titles = blogsAtEnd.map(r => r.title)
       assert(!titles.includes(blogToDelete.title))
     })
+
+    // describe('viewing a specific note', () => {
+
+      test.only('succeeds with a valid id', async () => {
+        const blogsAtStart = await helper.blogsInDb()
+        const blogToView = blogsAtStart[0]
+        
+        const resultBlog = await api.get(`/api/blogs/${blogToView.id}`)
+        // .expect(200)
+        // .expect('Content-Type', /application\/json/)
+// npm test -- --test-only
+        console.log('BLOGS AT START ',blogsAtStart)
+        console.log('RESULT BLOG BODY PAPA ',resultBlog.body)
+          console.log('== BLOG TO VIEW ',blogToView)
+  
+        assert.deepStrictEqual(resultBlog.body, blogToView)
+      })
+  
+      test('fails with statuscode 404 if note does not exist', async () => {
+        const validNonexistingId = await helper.nonExistingId()
+  
+        await api
+          .get(`/api/notes/${validNonexistingId}`)
+          .expect(404)
+      })
+  
+      test('fails with statuscode 400 id is invalid', async () => {
+        const invalidId = '5a3d5da59070081a82a3445'
+  
+        await api
+          .get(`/api/notes/${invalidId}`)
+          .expect(400)
+      })
+    // })
 
 after(async () => {
   await mongoose.connection.close()
