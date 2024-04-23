@@ -1,4 +1,5 @@
-const { test, after, beforeEach } = require('node:test')
+// npm test -- tests/blog_api.test.js
+const { test, after, beforeEach, describe } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const assert = require('assert')
@@ -17,12 +18,16 @@ beforeEach(async () => {
   await blogObject.save()
 })
 
+describe('when there is initially some blogs saved', () => {
   test('posts are returned as json', async () => {
     await api.get('/api/blogs')
     .expect(200)
     .expect('Content-Type', /application\/json/)
     })
-  
+  })
+
+
+describe('basic blog functionalities', () => {  
   test('there are two notes', async () => {
     const res = await api.get('/api/blogs')
     assert(res.body.length == initialBlogs.length)
@@ -36,7 +41,9 @@ beforeEach(async () => {
         assert('id' in obj, true)
       });
     })  
+  })
   
+  describe('blog post', () => {  
     test('a valid blog can be added', async()=>{
       const newBlog = {
         title: "async/await simplifies making async calls",
@@ -52,13 +59,14 @@ beforeEach(async () => {
         .expect('Content-Type', /application\/json/)
     
       const res = await api.get('/api/blogs')   
-      console.log(res.body)
       const titles = res.body.map(x => x.title)    
       // console.log('TITLE ',titles)    
       assert(res.body.length, initialBlogs.length + 1)
       assert(titles.includes('async/await simplifies making async calls'))
     })
+  })
 
+  describe('deletion of a new blog', () => {
     test('succeeds with status code 204 if id is valid', async () => {
       const blogsAtStart = await helper.blogsInDb()
       const blogToDelete = blogsAtStart[0]
@@ -75,40 +83,28 @@ beforeEach(async () => {
       const titles = blogsAtEnd.map(r => r.title)
       assert(!titles.includes(blogToDelete.title))
     })
-
-    // describe('viewing a specific note', () => {
-
-      test.only('succeeds with a valid id', async () => {
+  })
+    describe('viewing a specific note', () => {
+      test('succeeds with a valid id', async () => {
         const blogsAtStart = await helper.blogsInDb()
         const blogToView = blogsAtStart[0]
         
-        const resultBlog = await api.get(`/api/blogs/${blogToView.id}`)
-        // .expect(200)
-        // .expect('Content-Type', /application\/json/)
-// npm test -- --test-only
-        console.log('BLOGS AT START ',blogsAtStart)
-        console.log('RESULT BLOG BODY PAPA ',resultBlog.body)
-          console.log('== BLOG TO VIEW ',blogToView)
+        const resultBlog = await api.get(`/api/blogs/${blogsAtStart[0].id}`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+        // console.log('BLOGS AT START ',blogsAtStart)
+        // console.log('RESULT BLOG BODY ',resultBlog.body)
   
         assert.deepStrictEqual(resultBlog.body, blogToView)
       })
-  
-      test('fails with statuscode 404 if note does not exist', async () => {
+      test('fails with statuscode 404 if blog does not exist', async () => {
         const validNonexistingId = await helper.nonExistingId()
   
         await api
-          .get(`/api/notes/${validNonexistingId}`)
+          .get(`/api/blogs/${validNonexistingId}`)
           .expect(404)
       })
-  
-      test('fails with statuscode 400 id is invalid', async () => {
-        const invalidId = '5a3d5da59070081a82a3445'
-  
-        await api
-          .get(`/api/notes/${invalidId}`)
-          .expect(400)
-      })
-    // })
+    })
 
 after(async () => {
   await mongoose.connection.close()

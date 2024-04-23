@@ -7,8 +7,18 @@ blogsRouter.get('/', async (req, res) => {
   res.json(blogs)  //transformando a json
 })
 
+//individual blog
+blogsRouter.get('/:id', async (req, res) => {
+  const blog = await Blog.findById(req.params.id)
+  if (blog) {
+    res.json(blog)
+  } else {
+    res.status(404).end()
+  }
+})
+
 //Delete
-blogsRouter.delete('/:id', async(req,res,next) =>{
+blogsRouter.delete('/:id', async(req,res) =>{
   await Blog.findByIdAndDelete(req.params.id)
   res.status(204).end()
 })
@@ -18,23 +28,14 @@ blogsRouter.put('/:id', async (req, res) => {
   const body = req.body
 
   const blog = {
-    title: body.title,
-    author: body.author,
-    url: body.url,
-    likes: body.likes,
+    // title: body.title,
+    // author: body.author,
+    // url: body.url,
+    likes: body.likes,//4.14 update likes
   }
-
-  try {
     const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, blog, { new: true });
-    if (!updatedBlog) {
-      return res.status(404).json({ error: 'Blog not found' });
-    }
     // console.log('UPDATEDBLOG', updatedBlog);
     res.json(updatedBlog);
-  } catch (error) {
-    console.error('Error updating blog:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
   
 })
 
