@@ -41,21 +41,18 @@ blogsRouter.put('/:id', async (req, res) => {
 
 //Post
 blogsRouter.post('/', async (req, res, next) => {
-    const blog = new Blog(req.body)
+    const body = req.body
+
+    const blog = new Blog({
+      title: body.title,
+      author: body.author,
+      url: body.url,
+      likes: body.likes,
+    })
     // console.log('EL REQ BODY ES: ',req.body)
   
-    // blog
-    //   .save()
-    //   .then(result => {
-    //     res.status(201).json(result)
-    //   })
-    //   .catch(err=>next(err))
-    try{
       const savedBlog = await blog.save()
       res.status(201).json(savedBlog)
-    } catch(exception){
-      next(exception)
-    }
   })
 
 module.exports = blogsRouter
