@@ -43,15 +43,21 @@ blogsRouter.put('/:id', async (req, res) => {
 blogsRouter.post('/', async (req, res, next) => {
     const body = req.body
 
+    // const user = await User.findById(body.userId)
+
     const blog = new Blog({
       title: body.title,
       author: body.author,
       url: body.url,
       likes: body.likes,
+      // user: user.id
     })
     // console.log('EL REQ BODY ES: ',req.body)
   
       const savedBlog = await blog.save()
+      // user.blogs = user.blogs.concat(savedBlog._id)
+      // await user.save()
+
       res.status(201).json(savedBlog)
   })
 
