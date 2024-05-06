@@ -2,9 +2,8 @@ POST http://localhost:3003/api/blogs/
 Content-Type: application/json
 
 {
-    "title": "Nuevo tituloo",
-    "author": "Nuevo autodr",
+    "title": "ete",
+    "author": "messi",
     "url": "Nuevva url",
-    "likes": 1234536,
-    "userId": "663596d7d3a662804abe8339"
+    "likes": 1234536
 }

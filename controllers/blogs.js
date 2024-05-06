@@ -4,7 +4,7 @@ const User = require('../models/user')
 
 //Start the server
 blogsRouter.get('/', async (req, res) => {
-  const blogs = await Blog.find({})
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
   res.json(blogs)  //transformando a json
 })
 
@@ -44,22 +44,20 @@ blogsRouter.put('/:id', async (req, res) => {
 blogsRouter.post('/', async (req, res, next) => {
     const body = req.body
 
-    const user = await User.findById(body.userId)
-    console.log('BODY', body.userId)
-
-    console.log('User', user)
+    // const user = await User.findById(body.userId)
+    const user = await User.findOne({})
 
     const blog = new Blog({
       title: body.title,
       author: body.author,
       url: body.url,
       likes: body.likes,
-      // user: user.id
+      user: user.id
     })
-    // console.log('EL REQ BODY ES: ', body)
-      const savedBlog = await blog.save()
-      // user.blogs = user.blogs.concat(savedBlog._id)
-      // await user.save()
+
+    const savedBlog = await blog.save()
+      user.blogs = user.blogs.concat(savedBlog._id)
+      await user.save()
 
       res.status(201).json(savedBlog)
 
