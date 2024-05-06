@@ -45,9 +45,9 @@ blogsRouter.post('/', async (req, res, next) => {
     const body = req.body
 
     const user = await User.findById(body.userId)
-    // const user = await User.findById(body.id)
-    // console.log('USER', user)
-    console.log('BODY', body.id)
+    console.log('BODY', body.userId)
+
+    console.log('User', user)
 
     const blog = new Blog({
       title: body.title,
