@@ -1,6 +1,6 @@
 POST http://localhost:3003/api/blogs/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJlbnpvLmJhcmNvcyIsImlkIjoiNjYzYWE0ZjkzN2VhMmY1ZmZhMmYyNWIzIiwiaWF0IjoxNzE1MTE5MzY0LCJleHAiOjE3MTUxMjI5NjR9.abwu2OPMT74mKiGV7CurnrOeClvqHPqy6lwiLW-9ULM
+Authorization: Bearer TOKEN
 
 {
     "title": "for heee",
