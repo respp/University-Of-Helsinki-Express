@@ -1,5 +1,6 @@
 POST http://localhost:3003/api/blogs/
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3RpZSIsImlkIjoiNjYzOTYzYjE2Yzk1N2M3ZDI4OWFiNmFhIiwiaWF0IjoxNzE1MTEyNDgzfQ.ieTtUsiUFZOFcAgPu_jVD9vBrD7Jm_U-NAypKhaj7yQ
 
 {
     "title": "ete",
