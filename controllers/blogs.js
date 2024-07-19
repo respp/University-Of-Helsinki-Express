@@ -50,7 +50,7 @@ blogsRouter.put('/:id', async (req, res) => {
   
 })
 
-//Post
+//Post a blog
 blogsRouter.post('/', async (req, res) => {
     const body = req.body
 
@@ -77,5 +77,25 @@ blogsRouter.post('/', async (req, res) => {
       res.status(201).json(savedBlog)
 
   })
+
+  //Post a comment
+  blogsRouter.post('/:id/comments', async (request, response) => {
+    const blogId = request.params.id;
+    const comment = request.body.comment;
+  
+    if (!comment) {
+      return response.status(400).json({ error: 'Comment content missing' });
+    }
+  
+    const blog = await Blog.findById(blogId);
+    if (!blog) {
+      return response.status(404).json({ error: 'Blog not found' });
+    }
+  
+    blog.comments = blog.comments.concat(comment);
+    await blog.save();
+  
+    response.status(201).json(blog);
+  });
 
   module.exports = blogsRouter
