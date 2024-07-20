@@ -28,6 +28,16 @@ blogsRouter.get('/:id', async (req, res) => {
   }
 })
 
+//all comments in a blog
+blogsRouter.get('/:id/comments', async (req, res) => {
+  const blog = await Blog.findById(req.params.id)
+  if (blog) {
+    res.json(blog.comments)
+  } else {
+    res.status(404).end()
+  }
+})
+
 //Delete
 blogsRouter.delete('/:id', async(req,res) =>{
   await Blog.findByIdAndDelete(req.params.id)
