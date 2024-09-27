@@ -12,6 +12,11 @@ usersRouter.get('/', async (req, res) => {
 usersRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body
 
+   // Validación de campos requeridos
+   if (!name || name.trim() === "") {
+    return response.status(400).json({ error: 'El campo "name" es requerido.' });
+  }
+
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(password, saltRounds)
 

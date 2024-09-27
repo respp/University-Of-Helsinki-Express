@@ -9,7 +9,8 @@ const blogSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
-  comments : [ String ]
+  comments : [ String ],
+  description: String
 })
 
 //Cuando sea pasado a json pasará de ser _id a id y se eliminara __v

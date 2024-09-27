@@ -3,8 +3,8 @@ Content-Type: application/json
 Authorization: Bearer TOKEN
 
 {
-    "title": "El blog de play",
-    "author": "yoyo",
-    "url": "url",
-    "likes": 123
+    "title": "El blog de play ffbfbf",
+    "author": "yoy ffbo",
+    "url": "bfurl",
+    "likes": 12
 }
