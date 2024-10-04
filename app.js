@@ -1,5 +1,6 @@
 const config = require('./utils/config')
 const express = require('express')
+const compression = require('compression'); // Importa el middleware de compresión
 const app = express()
 require('express-async-errors')
 const cors = require('cors')
@@ -27,6 +28,7 @@ app.use(cors())
 app.use(express.static('dist'))
 app.use(express.json())
 
+app.use(compression()); 
 app.use(middleware.requestLogger)
 
 app.use('/api/blogs', blogsRouter)
